@@ -23,7 +23,7 @@ class MetaMaskConnector {
   }
   _runServer() {
     return new Promise((resolve, reject) => {
-      this._server = this._app.listen(this.config.port, err => {
+      this._server = this._app.listen(this.config.port, 'localhost', err => {
         if (err) return reject(err);
         resolve(new WebSocket.Server({ server: this._server }));
       });

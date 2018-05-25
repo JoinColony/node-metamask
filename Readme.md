@@ -2,7 +2,7 @@
 
 Connect to MetaMask from node.js.
 
-"Why would I ever want to do that?" - Sometimes you might have scripts / libraries that run in node and require signed transactions that you'd like to use MetaMask for (instead of dealing with private keys). This tool functions as a web3 Provider and can connect to pretty much any MetaMask instance remotely.
+"Why would I ever want to do that?" - Sometimes you might have scripts / libraries that run in node and require signed transactions that you'd like to use MetaMask for (instead of dealing with private keys). This tool functions as a web3 Provider and can be used with pretty much any MetaMask instance remotely. Please, only use locally to prevent PITM attacks (if you're brave enough to try it on mainnet).
 
 Sounds crazy? It probably is. Also highly experimental. Please use with caution.
 
@@ -22,7 +22,7 @@ const Connector = new MetaMaskConnector({
 });
 
 connector.start().then(() => {
-  // Now go to http://127.0.0.1:3333 in your MetaMask enabled web browser.
+  // Now go to http://localhost:3333 in your MetaMask enabled web browser.
   const web3 = new Web3(connector.getProvider());
   // Use web3 as you would normally do. Sign transactions in the browser.
 });
