@@ -38,7 +38,7 @@ to clean up.
 
 ## Disclaimer
 
-As I said, this is highly experimental. Tested only with web3 v1.0 (in node) and web3 0.4 (MetaMask, in the browser). Also it might not work with all functions supported by web3. Please report any bugs you find so we can improve this.
+As I said, this is highly experimental. Tested only with web3 v1.0 (in node) and web3 0.20.3 (MetaMask, in the browser). Also it might not work with all functions supported by web3. Please report any bugs you find so we can improve this.
 
 ## License
 
