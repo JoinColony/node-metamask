@@ -14,12 +14,17 @@ class MetaMaskConnector {
   async start() {
     this._app = express();
     this._app.use(express.static(path.resolve(__dirname, 'client')));
-    const wss = await this._runServer();
-    await this._initialize(wss);
+    this._wss = await this._runServer();
+    await this._initialize();
   }
   stop() {
-    this._
-    this._server.close();
+    return new Promise(resolve => {
+      this._wss.close(() => {
+        this._server.close(() =>{
+          resolve(true);
+        });
+      });
+    })
   }
   _runServer() {
     return new Promise((resolve, reject) => {
@@ -29,9 +34,9 @@ class MetaMaskConnector {
       });
     });
   }
-  _initialize(wss) {
+  _initialize() {
     return new Promise((resolve, reject) => {
-      wss.on('connection', ws => {
+      this._wss.on('connection', ws => {
         // Only allow one conection at a time
         if (this.ready()) {
           return ws.close();
@@ -66,12 +71,14 @@ class MetaMaskConnector {
   }
   send(action, payload, requiredAction) {
     return new Promise((resolve, reject) => {
-      this._ws.on('message', msg => {
-        const { responseAction, responsePayload } = this._handleMessage(msg);
+      const onMsg = msg => {
+        const { responseAction, responsePayload } = this._handleMessage(msg.data);
         if (requiredAction === responseAction) {
+          this._ws.removeEventListener('message', onMsg);
           resolve(responsePayload);
         }
-      });
+      }
+      this._ws.addEventListener('message', onMsg);
       const msg = JSON.stringify({ action, payload });
       this._ws.send(msg);
     })

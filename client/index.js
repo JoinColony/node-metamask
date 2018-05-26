@@ -1,9 +1,9 @@
 (async function (w) {
   if (!w.web3) {
-    return showMessage('MetaMask not found!');
+    return addLog('MetaMask not found!');
   }
   if (!await checkUnlocked()) {
-    return showMessage('Please unlock MetaMask first and then reload this page');
+    return addLog('Please unlock MetaMask first and then reload this page');
   }
   const socket = new WebSocket('ws://localhost:3333');
   const reply = (action, payload) => socket.send(JSON.stringify({ action, payload }));
@@ -12,7 +12,7 @@
     try {
       message = JSON.parse(msg.data);
     } catch (e) {
-      return showMessage('Could not parse websocket message. Is it a proper JSON command?');
+      return addLog('Could not parse websocket message. Is it a proper JSON command?');
     }
     if (message.action === 'execute') {
       executeAction(message.payload, reply);
@@ -21,7 +21,7 @@
 
   async function executeAction({ method, params}, reply) {
     let result;
-    showMessage(`Calling ${method} with ${JSON.stringify(params)}`);
+    addLog(`Calling ${method} with ${JSON.stringify(params)}`);
     try {
       result = await execute(method, params);
     } catch(e) {
@@ -61,7 +61,9 @@
     });
   }
 
-  function showMessage(msg) {
-    document.querySelector('#message').innerText = msg;
+  function addLog(msg) {
+    const logEntry = document.createElement('li');
+    logEntry.innerText = `${(new Date()).toString()} - ${msg}`;
+    document.querySelector('#messages').appendChild(logEntry);
   }
 })(window)
