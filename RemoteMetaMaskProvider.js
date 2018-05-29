@@ -35,7 +35,7 @@ class RemoteMetaMaskProvider {
     }
     payload.method = this._getAsyncMethod(payload.method);
     this._connector.send('execute', payload, 'executed').then(result => {
-      if (result.error) return callback(new Error(result.error));
+      if (result && result.error) return callback(new Error(result.error));
       callback(null, {
         id: payload.id,
         jsonrpc: '2.0',
