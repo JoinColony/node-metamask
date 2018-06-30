@@ -17,7 +17,7 @@ yarn add node-metamask
 ```js
 const MetaMaskConnector = require('node-metamask');
 const connector = new MetaMaskConnector({
-  port: 3333 // this is the default port
+  port: 3333, // this is the default port
   onConnect() { console.log('MetaMask client connected') }, // Function to run when MetaMask is connected (optional)
 });
 
