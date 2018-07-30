@@ -60,27 +60,27 @@ class MetaMaskConnector {
     } catch (e) {
       throw new Error('Could not parse message from socket. Is it valid JSON?')
     }
-    const { action, request_id, payload } = message;
-    return this._handleAction(action, request_id, payload);
+    const { action, requestId, payload } = message;
+    return this._handleAction(action, requestId, payload);
   }
-  _handleAction(action, request_id, payload) {
+  _handleAction(action, requestId, payload) {
     if (action === 'error') {
       throw new Error(payload);
     }
-    return { responseAction: action, responseRequestId: request_id, responsePayload: payload };
+    return { responseAction: action, responseRequestId: requestId, responsePayload: payload };
   }
-  send(action, request_id, payload, requiredAction) {
+  send(action, requestId, payload, requiredAction) {
     return new Promise((resolve, reject) => {
       const onMsg = msg => {
         const { responseAction, responseRequestId, responsePayload } = this._handleMessage(msg.data);
-        console.log(`action ${responseAction}, request_id ${responseRequestId}, payload ${JSON.stringify(responsePayload)}`)
+        console.log(`action ${responseAction}, requestId ${responseRequestId}, payload ${JSON.stringify(responsePayload)}`)
         if (requiredAction === responseAction) {
           this._ws.removeEventListener('message', onMsg);
-          resolve({request_id: responseRequestId, result: responsePayload});
+          resolve({requestId: responseRequestId, result: responsePayload});
         }
       }
       this._ws.addEventListener('message', onMsg);
-      const msg = JSON.stringify({ action, request_id, payload });
+      const msg = JSON.stringify({ action, requestId, payload });
       this._ws.send(msg);
     })
   }
