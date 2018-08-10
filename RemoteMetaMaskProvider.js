@@ -56,6 +56,7 @@ class RemoteMetaMaskProvider {
       requestId: responseRequestId,
       result
     }) => {
+      const requestCallback = this._callbacks.get(responseRequestId);
       if (!this._callbacks.has(responseRequestId)) {
         return; // A response for this request was already handled
       } else {
