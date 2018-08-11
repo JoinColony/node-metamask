@@ -4,12 +4,24 @@
   "description": "🦊 Connect to MetaMask from node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint *.js"
   },
   "author": "Christian Maniewski <chris@colony.io>",
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.3",
     "ws": "^5.2.0"
+  },
+  "devDependencies": {
+    "@colony/eslint-config-colony": "^4.0.0",
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-import-resolver-jest": "^2.1.1",
+    "eslint-plugin-flowtype": "^2.44.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "prettier": "^1.10.2"
   }
 }
