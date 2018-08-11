@@ -1,6 +1,6 @@
 {
   "name": "node-metamask",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "🦊 Connect to MetaMask from node.js",
   "main": "index.js",
   "scripts": {
