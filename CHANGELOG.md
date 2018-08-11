@@ -1,5 +1,12 @@
 ## node-metamask changelog
 
+### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.1.0) ] 1.1.0 / 11.08.2018
+* Adds support for Web3 0.x on the node side (thanks @frods)
+* Provides correct mapping of requests (also thanks @frods!)
+* Fixes typos in and adds some more JSON-RPC requests (eth_blockNumber, eth_getLogs, eth_getTransactionByHash), also by @frods :)
+* Add eslint checks (thanks @ryanchristo!)
+* Fixes some typos in readme (thanks to @hems)
+
 ### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.0.2) ] 1.0.2 / 29.05.2018
 * Fix empty result error bug
 
