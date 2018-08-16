@@ -3,12 +3,13 @@
 /* global web3:true */
 /* global window:true */
 
-(async function client(w) {
+(async w => {
   const addLog = msg => {
     const logEntry = document.createElement('li');
-    logEntry.innerText = `${new Date().toString()} - ${msg}`;
+    logEntry.innerText = `${new Date().toString()}\n${msg}`;
     document.querySelector('#messages').appendChild(logEntry);
   };
+
   const checkUnlocked = () =>
     new Promise((resolve, reject) => {
       web3.eth.getAccounts((err, accounts) => {
@@ -16,6 +17,7 @@
         return resolve(accounts && !!accounts[0]);
       });
     });
+
   const execute = (requestId, method, params) =>
     new Promise((resolve, reject) => {
       const splitMethod = method.split('_');
@@ -25,7 +27,10 @@
         if (err) {
           return reject(err);
         }
-        addLog(`Result from ${requestId} ${method}: ${JSON.stringify(result)}`);
+        addLog(
+          `Request ID: ${requestId}
+          Result from ${method}: ${JSON.stringify(result)}`,
+        );
         return resolve(result);
       });
       try {
@@ -34,10 +39,12 @@
         reject(e);
       }
     });
+
   async function executeAction(requestId, { method, params }, reply) {
     let result;
     addLog(
-      `Request ${requestId} Calling ${method} with ${JSON.stringify(params)}`,
+      `Request ID: ${requestId}
+      Calling ${method}: ${JSON.stringify(params)}`,
     );
     try {
       result = await execute(requestId, method, params);
@@ -48,6 +55,7 @@
     }
     return reply('executed', requestId, result);
   }
+
   if (!w.web3) {
     return addLog('MetaMask not found!');
   }
@@ -71,5 +79,6 @@
     }
     return true;
   };
+
   return true;
 })(window);
