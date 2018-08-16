@@ -47,6 +47,21 @@ class RemoteMetaMaskProvider {
     return method;
   }
 
+  // When connected to a remote network, the return values for "gasPrice" and
+  // "value" are strings, so we will need to properly format them for ethers.
+  // Ideally we would use the big number type from bn.js or bignumber.js but
+  // ethers does not support any big number type other than it's own.
+  static formatResult(_result) {
+    const result = _result;
+    if (result && typeof result.gasPrice === 'string') {
+      result.gasPrice = Number(result.gasPrice);
+    }
+    if (result && typeof result.value === 'string') {
+      result.value = Number(result.value);
+    }
+    return result;
+  }
+
   send(_payload, _callback) {
     if (!this._connector.ready()) {
       return _callback(
@@ -74,7 +89,7 @@ class RemoteMetaMaskProvider {
         requestCallback(null, {
           id: payload.id,
           jsonrpc: '2.0',
-          result,
+          result: RemoteMetaMaskProvider.formatResult(result),
         });
       })
       .catch(err => _callback(err));
