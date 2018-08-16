@@ -3,7 +3,16 @@ class RemoteMetaMaskProvider {
     this._connector = connector;
     this._callbacks = new Map();
   }
-  _getAsyncMethod(method) {
+
+  static generateRequestId() {
+    const s4 = () =>
+      Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+  }
+
+  static getAsyncMethod(method) {
     // Sync methods don't work with MetaMask
     this.syncMethods = [
       'version_node',
@@ -37,26 +46,7 @@ class RemoteMetaMaskProvider {
     }
     return method;
   }
-  _guid() {
-    this.s4 = () =>
-      Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    return `
-      ${this.s4()}
-      ${this.s4()}
-      -
-      ${this.s4()}
-      -
-      ${this.s4()}
-      -
-      ${this.s4()}
-      -
-      ${this.s4()}
-      ${this.s4()}
-      ${this.s4()}
-    `.replace(/[\n\r]+ */g, '');
-  }
+
   send(_payload, _callback) {
     if (!this._connector.ready()) {
       return _callback(
@@ -66,10 +56,10 @@ class RemoteMetaMaskProvider {
     // Because requests are handled across a WebSocket they need to be
     // associated with their callback with an ID which is returned with the
     // response.
-    const requestId = this._guid();
+    const requestId = RemoteMetaMaskProvider.generateRequestId();
     const payload = _payload;
     this._callbacks.set(requestId, _callback);
-    payload.method = this._getAsyncMethod(payload.method);
+    payload.method = RemoteMetaMaskProvider.getAsyncMethod(payload.method);
     return this._connector
       .send('execute', requestId, payload, 'executed')
       .then(({ requestId: responseRequestId, result }) => {
@@ -89,6 +79,7 @@ class RemoteMetaMaskProvider {
       })
       .catch(err => _callback(err));
   }
+
   sendAsync(payload, callback) {
     this.send(payload, callback);
   }
