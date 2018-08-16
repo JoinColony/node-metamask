@@ -4,6 +4,7 @@ class RemoteMetaMaskProvider {
     this._callbacks = new Map();
   }
 
+  // Generate a request id to track callbacks from async methods
   static generateRequestId() {
     const s4 = () =>
       Math.floor((1 + Math.random()) * 0x10000)
@@ -12,9 +13,10 @@ class RemoteMetaMaskProvider {
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
 
+  // Get the associated async method for the given sync method (MetaMask does
+  // not work with sync methods)
   static getAsyncMethod(method) {
-    // Sync methods don't work with MetaMask
-    this.syncMethods = [
+    const syncMethods = [
       'version_node',
       'version_network',
       'version_ethereum',
@@ -29,13 +31,17 @@ class RemoteMetaMaskProvider {
       'eth_accounts',
       'eth_blockNumber',
     ];
-    const idx = this.syncMethods.indexOf(method);
+
+    // Translate the defined sync methods
+    const idx = syncMethods.indexOf(method);
     if (idx >= 0) {
-      return this.syncMethods[idx].replace(
+      return syncMethods[idx].replace(
         /(.+)_([a-z])(.+)/,
         (str, p1, p2, p3) => `${p1}_get${p2.toUpperCase()}${p3}`,
       );
     }
+
+    // Translate other sync methods
     const translateMethod = {
       net_version: 'version_getNetwork',
       eth_getLogs: 'eth_filter',
@@ -44,6 +50,7 @@ class RemoteMetaMaskProvider {
     if (Object.prototype.hasOwnProperty.call(translateMethod, method)) {
       return translateMethod[method];
     }
+
     return method;
   }
 
@@ -53,48 +60,68 @@ class RemoteMetaMaskProvider {
   // ethers does not support any big number type other than it's own.
   static formatResult(_result) {
     const result = _result;
+
+    // Format "gasPrice"
     if (result && typeof result.gasPrice === 'string') {
       result.gasPrice = Number(result.gasPrice);
     }
+
+    // Format "value"
     if (result && typeof result.value === 'string') {
       result.value = Number(result.value);
     }
+
     return result;
   }
 
+  // Define send method
   send(_payload, _callback) {
     if (!this._connector.ready()) {
       return _callback(
-        new Error("Can't send. Not connected to a MetaMask socket."),
+        new Error('Unable to send. Not connected to a MetaMask socket.'),
       );
     }
-    // Because requests are handled across a WebSocket they need to be
-    // associated with their callback with an ID which is returned with the
-    // response.
+
+    // Because requests are handled across a WebSocket, their callbacks need to
+    // be associated with an ID which is returned with the response.
     const requestId = RemoteMetaMaskProvider.generateRequestId();
-    const payload = _payload;
+
+    // Set the callback using the requestId
     this._callbacks.set(requestId, _callback);
+
+    // Set the payload to allow reassignment
+    const payload = _payload;
+
+    // Get the async method (Metamask does not support sync methods)
     payload.method = RemoteMetaMaskProvider.getAsyncMethod(payload.method);
+
     return this._connector
       .send('execute', requestId, payload, 'executed')
       .then(({ requestId: responseRequestId, result }) => {
         const requestCallback = this._callbacks.get(responseRequestId);
-        if (!this._callbacks.has(responseRequestId)) {
-          return; // A response for this request was already handled
-        }
-        this._callbacks.delete(responseRequestId);
+
+        // Exit if a response for this request was already handled
+        if (!this._callbacks.has(responseRequestId)) return;
+
+        // Throw error if send error
         if (result && result.error) {
           requestCallback(new Error(result.error));
         }
+
+        // Handle request callback
         requestCallback(null, {
           id: payload.id,
           jsonrpc: '2.0',
           result: RemoteMetaMaskProvider.formatResult(result),
         });
+
+        // Delete the callback after the request has been handled
+        this._callbacks.delete(responseRequestId);
       })
       .catch(err => _callback(err));
   }
 
+  // Define async send method
   sendAsync(payload, callback) {
     this.send(payload, callback);
   }
