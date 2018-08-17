@@ -63,12 +63,12 @@ class RemoteMetaMaskProvider {
 
     // Format "gasPrice"
     if (result && typeof result.gasPrice === 'string') {
-      result.gasPrice = Number(result.gasPrice);
+      result.gasPrice = parseInt(result.gasPrice, 10);
     }
 
     // Format "value"
     if (result && typeof result.value === 'string') {
-      result.value = Number(result.value);
+      result.value = parseInt(result.value, 10);
     }
 
     return result;
@@ -84,7 +84,7 @@ class RemoteMetaMaskProvider {
 
     // Because requests are handled across a WebSocket, their callbacks need to
     // be associated with an ID which is returned with the response.
-    const requestId = RemoteMetaMaskProvider.generateRequestId();
+    const requestId = this.constructor.generateRequestId();
 
     // Set the callback using the requestId
     this._callbacks.set(requestId, _callback);
@@ -93,7 +93,7 @@ class RemoteMetaMaskProvider {
     const payload = _payload;
 
     // Get the async method (Metamask does not support sync methods)
-    payload.method = RemoteMetaMaskProvider.getAsyncMethod(payload.method);
+    payload.method = this.constructor.getAsyncMethod(payload.method);
 
     return this._connector
       .send('execute', requestId, payload, 'executed')
@@ -112,7 +112,7 @@ class RemoteMetaMaskProvider {
         requestCallback(null, {
           id: payload.id,
           jsonrpc: '2.0',
-          result: RemoteMetaMaskProvider.formatResult(result),
+          result: this.constructor.formatResult(result),
         });
 
         // Delete the callback after the request has been handled
