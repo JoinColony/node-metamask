@@ -71,6 +71,9 @@ class RemoteMetaMaskProvider {
       result.value = parseInt(result.value, 10);
     }
 
+    // Format for "eth_filter"
+    if (result && result.logIndex) return [result];
+
     return result;
   }
 
@@ -108,11 +111,14 @@ class RemoteMetaMaskProvider {
           requestCallback(new Error(result.error));
         }
 
+        // Format result to work with ethers
+        const formattedResult = this.constructor.formatResult(result);
+
         // Handle request callback
         requestCallback(null, {
           id: payload.id,
           jsonrpc: '2.0',
-          result: this.constructor.formatResult(result),
+          result: formattedResult,
         });
 
         // Delete the callback after the request has been handled
