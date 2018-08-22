@@ -66,7 +66,7 @@ class MetaMaskConnector {
       throw new Error('Could not parse message from socket. Is it valid JSON?');
     }
     const { action, requestId, payload } = message;
-    return MetaMaskConnector.handleAction(action, requestId, payload);
+    return this.handleAction(action, requestId, payload);
   }
 
   static handleAction(action, requestId, payload) {
@@ -87,8 +87,11 @@ class MetaMaskConnector {
           responseAction,
           responseRequestId,
           responsePayload,
-        } = MetaMaskConnector.handleMessage(msg.data);
-        if (requiredAction === responseAction) {
+        } = this.constructor.handleMessage(msg.data);
+        if (
+          requiredAction === responseAction &&
+          requestId === responseRequestId
+        ) {
           this._ws.removeEventListener('message', onMsg);
           resolve({
             requestId: responseRequestId,

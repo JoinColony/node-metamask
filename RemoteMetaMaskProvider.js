@@ -101,10 +101,11 @@ class RemoteMetaMaskProvider {
     return this._connector
       .send('execute', requestId, payload, 'executed')
       .then(({ requestId: responseRequestId, result }) => {
-        const requestCallback = this._callbacks.get(responseRequestId);
-
         // Exit if a response for this request was already handled
         if (!this._callbacks.has(responseRequestId)) return;
+
+        // Get the request callback using the returned request id
+        const requestCallback = this._callbacks.get(responseRequestId);
 
         // Throw error if send error
         if (result && result.error) {
