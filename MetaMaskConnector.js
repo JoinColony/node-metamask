@@ -10,12 +10,14 @@ class MetaMaskConnector {
   constructor(options) {
     this.config = Object.assign({}, { port: DEFAULT_PORT }, options);
   }
+
   async start() {
     this._app = express();
     this._app.use(express.static(path.resolve(__dirname, 'client')));
     this._wss = await this._runServer();
     await this._initialize();
   }
+
   stop() {
     return new Promise(resolve => {
       this._wss.close(() => {
@@ -25,6 +27,7 @@ class MetaMaskConnector {
       });
     });
   }
+
   _runServer() {
     return new Promise((resolve, reject) => {
       this._server = this._app.listen(this.config.port, 'localhost', err => {
@@ -33,6 +36,7 @@ class MetaMaskConnector {
       });
     });
   }
+
   _initialize() {
     return new Promise(resolve => {
       this._wss.on('connection', ws => {
@@ -49,9 +53,11 @@ class MetaMaskConnector {
       });
     });
   }
+
   ready() {
     return this._ws && this._ws.readyState === WebSocket.OPEN;
   }
+
   static handleMessage(msg) {
     let message;
     try {
@@ -60,8 +66,9 @@ class MetaMaskConnector {
       throw new Error('Could not parse message from socket. Is it valid JSON?');
     }
     const { action, requestId, payload } = message;
-    return MetaMaskConnector.handleAction(action, requestId, payload);
+    return this.handleAction(action, requestId, payload);
   }
+
   static handleAction(action, requestId, payload) {
     if (action === 'error') {
       throw new Error(payload);
@@ -72,6 +79,7 @@ class MetaMaskConnector {
       responsePayload: payload,
     };
   }
+
   send(action, requestId, payload, requiredAction) {
     return new Promise(resolve => {
       const onMsg = msg => {
@@ -79,8 +87,11 @@ class MetaMaskConnector {
           responseAction,
           responseRequestId,
           responsePayload,
-        } = MetaMaskConnector.handleMessage(msg.data);
-        if (requiredAction === responseAction) {
+        } = this.constructor.handleMessage(msg.data);
+        if (
+          requiredAction === responseAction &&
+          requestId === responseRequestId
+        ) {
           this._ws.removeEventListener('message', onMsg);
           resolve({
             requestId: responseRequestId,
@@ -93,6 +104,7 @@ class MetaMaskConnector {
       this._ws.send(msg);
     });
   }
+
   getProvider() {
     return new RemoteMetaMaskProvider(this);
   }
