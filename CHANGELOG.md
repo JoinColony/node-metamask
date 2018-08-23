@@ -1,5 +1,9 @@
 ## node-metamask changelog
 
+### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.1.1) ] 1.1.1 / 23.08.2018
+* Adds `formatResult` method to ensure results are formatted to work with `ethers.js`
+* Fixes `MetaMaskConnector` to ensure the correct payload is sent to `RemoteMetaMaskProvider`
+
 ### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.1.0) ] 1.1.0 / 11.08.2018
 * Adds support for Web3 0.x on the node side (thanks @frods)
 * Provides correct mapping of requests (also thanks @frods!)
