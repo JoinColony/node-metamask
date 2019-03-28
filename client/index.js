@@ -11,7 +11,9 @@
   };
 
   const checkUnlocked = async () => {
-    await window.ethereum.enable() // Ensure access to MetaMask
+    if(w.ethereum) {
+      await w.ethereum.enable() // Ensure access to MetaMask
+    }
     return new Promise((resolve, reject) => {
       web3.eth.getAccounts((err, accounts) => {
         if (err) return reject(err);
