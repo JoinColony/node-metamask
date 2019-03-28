@@ -10,13 +10,15 @@
     document.querySelector('#messages').appendChild(logEntry);
   };
 
-  const checkUnlocked = () =>
-    new Promise((resolve, reject) => {
+  const checkUnlocked = async () => {
+    await window.ethereum.enable() // Ensure access to MetaMask
+    return new Promise((resolve, reject) => {
       web3.eth.getAccounts((err, accounts) => {
         if (err) return reject(err);
         return resolve(accounts && !!accounts[0]);
       });
     });
+  };
 
   const execute = (requestId, method, params) =>
     new Promise((resolve, reject) => {
