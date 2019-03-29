@@ -1,5 +1,8 @@
 ## node-metamask changelog
 
+### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.1.2) ] 1.1.2 / 29.03.2019
+* Fixes connection to MetaMask when privacy mode is enabled (thanks @monokh)
+
 ### [ [>](https://github.com/JoinColony/node-metamask/tree/v1.1.1) ] 1.1.1 / 23.08.2018
 * Adds `formatResult` method to ensure results are formatted to work with `ethers.js`
 * Fixes `MetaMaskConnector` to ensure the correct payload is sent to `RemoteMetaMaskProvider`
