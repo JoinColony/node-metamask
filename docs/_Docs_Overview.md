@@ -1,4 +1,8 @@
-# node-metamask
+---
+title: Overview
+section: Docs
+order: 1
+---
 
 Connect Node.js to MetaMask.
 

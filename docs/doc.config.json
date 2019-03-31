@@ -1,0 +1,6 @@
+{
+    "logo": "img/node-metamask_color.svg",
+    "logoSmall": "img/logomark_node-metamask_color.svg",
+    "sectionOrder": ["Docs"],
+    "description": "A JavaScript library that functions as a Web3 provider that connects Node to MetaMask."
+}
