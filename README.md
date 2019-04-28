@@ -1,3 +1,12 @@
+<div align="center">
+  <img src="/docs/img/nodeMetamask_fullColor.svg" width="600" />
+</div>
+<div align="center">
+  <a href="https://build.colony.io/">
+    <img src="https://img.shields.io/discourse/https/build.colony.io/status.svg" />
+  </a>
+</div>
+
 # node-metamask
 
 Connect Node.js to MetaMask.
