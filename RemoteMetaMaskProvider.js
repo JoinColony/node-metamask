@@ -79,8 +79,8 @@ class RemoteMetaMaskProvider {
     // If result is a number in scientific notation, which nodeJS might automatically convert it into if it is >= 1e21,
     // then it back into a number form so that it can be used by ethers' bignumber type
     // e.g. from 9.99862115952e+21 to 9998621159520000000000
-    if (!isNaN(result) && (typeof result === 'string') && (!result.startsWith('0x')) && (Number(result) >= 1e21)) {
-     return fromExponential(result)
+    if (result && !isNaN(result) && (typeof result === 'string') && (!result.startsWith('0x')) && (Number(result) >= 1e21)) {
+     return fromExponential(result);
     } 
 
     return result;
