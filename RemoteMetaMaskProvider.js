@@ -1,4 +1,4 @@
-const fromExponential = require('./FromExponential');
+// const fromExponential = require('./FromExponential');
 
 class RemoteMetaMaskProvider {
   constructor(connector) {
@@ -76,12 +76,12 @@ class RemoteMetaMaskProvider {
     // Format for "eth_filter"
     if (result && result.logIndex) return [result];
 
-    // If result is a number in scientific notation, which nodeJS might automatically convert it into if it is >= 1e21,
-    // then it back into a number form so that it can be used by ethers' bignumber type
-    // e.g. from 9.99862115952e+21 to 9998621159520000000000
-    if (result && !isNaN(result) && (typeof result === 'string') && (!result.startsWith('0x')) && (Number(result) >= 1e21)) {
-     return fromExponential(result);
-    } 
+    // // If result is a number in scientific notation, which nodeJS might automatically convert it into if it is >= 1e21,
+    // // then it back into a number form so that it can be used by ethers' bignumber type
+    // // e.g. from 9.99862115952e+21 to 9998621159520000000000
+    // if (result && !isNaN(result) && (typeof result === 'string') && (!result.startsWith('0x')) && (Number(result) >= 1e21)) {
+    //  return fromExponential(result);
+    // } 
 
     return result;
   }
