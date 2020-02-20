@@ -1,4 +1,4 @@
-// const fromExponential = require('./FromExponential');
+const fromExponential = require('./FromExponential');
 
 class RemoteMetaMaskProvider {
   constructor(connector) {
